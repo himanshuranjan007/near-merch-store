@@ -70,6 +70,7 @@ async function startServer() {
       origin: process.env.CORS_ORIGIN?.split(',').map((o) => o.trim()) ?? [
         bosConfig.hostUrl,
         bosConfig.ui.url,
+        "http://localhost:3001"
       ],
       credentials: true,
     })
