@@ -25,7 +25,7 @@ import imgProduct3 from "figma:asset/f088d7ec9f16661bc461a762417ac9e90242645d.pn
 import imgProduct4 from "figma:asset/432e520b35ca5db7bb27272f597e5876cda9dd9a.png";
 import imgProduct5 from "figma:asset/4bccc138d7d406e34e8558c132be301bebc7f3d7.png";
 import imgProduct6 from "figma:asset/46ea705ffd78f4019918bb2fd2b66e6caa50008e.png";
-import imgProduct7 from "figma:asset/91bb79150f84dc69e298818199189189c32fd5d7.png";
+import imgProduct7 from "figma:asset/91bb79150f84dc69e298818199169189c32fd5d7.png";
 import imgProduct8 from "figma:asset/c90671806a221dfe4f2cfa2c496b9afe21957596.png";
 import imgProduct9 from "figma:asset/60aeb6e8fae869d59657e4792208dcffbd4ed8de.png";
 import imgProduct10 from "figma:asset/eb34852b4e297ee7b9fefd08cceddc7281c77866.png";
