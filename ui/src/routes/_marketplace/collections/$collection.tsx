@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { ArrowLeft, Heart, Plus, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { LoadingSpinner } from '@/components/loading';
+import { SizeSelectionModal } from '@/components/marketplace/size-selection-modal';
+import { CartSidebar } from '@/components/marketplace/cart-sidebar';
 import { useCart } from '@/hooks/use-cart';
 import { useFavorites } from '@/hooks/use-favorites';
 import { cn } from '@/lib/utils';
@@ -20,7 +22,7 @@ export const Route = createFileRoute('/_marketplace/collections/$collection')({
   },
   errorComponent: ({ error }) => {
     const router = useRouter();
-    
+
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="max-w-md text-center space-y-4">
@@ -35,8 +37,8 @@ export const Route = createFileRoute('/_marketplace/collections/$collection')({
             <Button onClick={() => router.invalidate()}>
               Try Again
             </Button>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => router.navigate({ to: '/collections' })}
             >
               Back to Collections
@@ -49,63 +51,29 @@ export const Route = createFileRoute('/_marketplace/collections/$collection')({
   component: CollectionDetailPage,
 });
 
-const collectionMetadata: Record<string, {
-  title: string;
-  description: string;
-  features: string[];
-}> = {
-  men: {
-    title: "Men's Collection",
-    description: 'Premium fits designed specifically for men. From classic essentials to modern oversized styles, each piece is crafted with attention to detail and comfort.',
-    features: [
-      'Regular & Oversized Fits',
-      'Premium 100% Cotton',
-      'Modern Minimalist Designs',
-      'Durable Construction',
-    ],
-  },
-  women: {
-    title: "Women's Collection",
-    description: 'Tailored fits designed for women. Comfortable, stylish, and sustainably made pieces that blend fashion with function.',
-    features: [
-      'Fitted & Crop Styles',
-      'Premium Soft Fabrics',
-      'Versatile Designs',
-      'Sustainable Materials',
-    ],
-  },
-  exclusives: {
-    title: 'NEAR Legion Collection',
-    description: "Limited edition designs created in collaboration with artists. Once they're gone, they're gone forever.",
-    features: [
-      'Limited Edition Items',
-      'Artist Collaborations',
-      'Unique Designs',
-      'Collectible Pieces',
-    ],
-  },
-  accessories: {
-    title: 'Accessories',
-    description: 'Complete your look with our curated selection. From everyday essentials to statement pieces.',
-    features: [
-      'Functional & Stylish',
-      'Premium Materials',
-      'Versatile Designs',
-      'Perfect for Gifting',
-    ],
-  },
-};
-
 function CollectionDetailPage() {
   const { collection: collectionSlug } = Route.useParams();
   const { addToCart } = useCart();
   const { favoriteIds, toggleFavorite } = useFavorites();
+  const [sizeModalProduct, setSizeModalProduct] = useState<Product | null>(null);
+  const [isCartSidebarOpen, setIsCartSidebarOpen] = useState(false);
 
   const { data } = useSuspenseCollection(collectionSlug);
   const { collection, products } = data;
-  const metadata = collectionMetadata[collectionSlug];
+  // Render collection features from API (no hardcoded UI metadata).
+  const features = collection?.features ?? [];
 
-  if (!collection || !metadata) {
+  const handleAddToCart = (product: Product) => {
+    setSizeModalProduct(product);
+  };
+
+  const handleAddToCartFromModal = (productId: string, size: string) => {
+    addToCart(productId, size);
+    setSizeModalProduct(null);
+    setIsCartSidebarOpen(true);
+  };
+
+  if (!collection) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -119,12 +87,12 @@ function CollectionDetailPage() {
   }
 
   return (
-    <div className="bg-white min-h-screen w-full">
+    <div className="bg-background min-h-screen w-full">
       <div className="border-b border-[rgba(0,0,0,0.1)] py-4">
         <div className="max-w-[1408px] mx-auto px-4 md:px-8 lg:px-16">
           <Link
             to="/collections"
-            className="flex items-center gap-3 text-neutral-950 hover:opacity-70 transition-opacity tracking-[-0.48px]"
+            className="flex items-center gap-3 text-foreground hover:opacity-70 transition-opacity tracking-[-0.48px]"
           >
             <ArrowLeft className="size-4" />
             Back to Collections
@@ -132,38 +100,42 @@ function CollectionDetailPage() {
         </div>
       </div>
 
-      <div className="border-b border-[rgba(0,0,0,0.1)]">
-        <div className="grid md:grid-cols-2">
-          <div className="bg-[#ececf0] h-[400px] md:h-[529px] overflow-hidden">
-            <div className="w-full h-full bg-gradient-to-br from-[#ececf0] to-[#d4d4d8] flex items-center justify-center">
-              <span className="text-8xl opacity-20">{collection.name.charAt(0)}</span>
-            </div>
+      <div className="border-b mx-auto border-[rgba(0,0,0,0.1)]">
+        <div className="grid m-6 md:p-12 md:grid-cols-2">
+          <div className="bg-[#ececf0] h-[400px]  md:h-[529px] overflow-hidden">
+            <img
+              src={collection.image}
+              alt={collection.name}
+              className="w-full h-full object-cover"
+            />
           </div>
 
           <div className="border-l border-[rgba(0,0,0,0.1)] p-8 md:p-16 flex flex-col justify-center">
             <div className="space-y-8">
-              <h1 className="text-2xl font-medium tracking-[-0.48px]">{metadata.title}</h1>
+              <h1 className="text-2xl font-medium tracking-[-0.48px]">{collection.name}</h1>
               
               <p className="text-[#717182] text-lg leading-7 tracking-[-0.48px]">
-                {metadata.description}
+                {collection.description || ''}
               </p>
 
-              <div className="space-y-3">
-                {metadata.features.map((feature, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <div className="w-1.5 h-1.5 bg-neutral-950 rounded-full" />
-                    <p className="tracking-[-0.48px]">{feature}</p>
-                  </div>
-                ))}
-              </div>
+              {features.length > 0 && (
+                <div className="space-y-3">
+                  {features.map((feature, index) => (
+                    <div key={index} className="flex items-center gap-3">
+                      <div className="w-1.5 h-1.5 bg-neutral-950 rounded-full" />
+                      <p className="tracking-[-0.48px]">{feature}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               <div className="flex gap-6 pt-4 border-t border-[rgba(0,0,0,0.1)]">
                 <div>
-                  <p className="text-[#717182] text-sm tracking-[-0.48px] mb-1">Products</p>
+                  <p className="text-muted-foreground text-sm tracking-[-0.48px] mb-1">Products</p>
                   <p className="tracking-[-0.48px]">{products.length}</p>
                 </div>
                 <div>
-                  <p className="text-[#717182] text-sm tracking-[-0.48px] mb-1">Category</p>
+                  <p className="text-muted-foreground text-sm tracking-[-0.48px] mb-1">Category</p>
                   <p className="tracking-[-0.48px]">{collection.name}</p>
                 </div>
               </div>
@@ -176,10 +148,10 @@ function CollectionDetailPage() {
         <div className="max-w-[1408px] mx-auto px-4 md:px-8 lg:px-16">
           <div className="mb-12">
             <h2 className="text-xl font-medium text-neutral-950 mb-4 tracking-[-0.48px]">
-              All {metadata.title}
+              All {collection.name}
             </h2>
             <p className="text-[#717182] tracking-[-0.48px]">
-              Browse our complete {collectionSlug}'s collection
+              Browse our complete {collection.name.toLowerCase()} collection
             </p>
           </div>
 
@@ -190,7 +162,7 @@ function CollectionDetailPage() {
                 product={product}
                 isFavorite={favoriteIds.includes(product.id)}
                 onToggleFavorite={toggleFavorite}
-                onAddToCart={addToCart}
+                onAddToCart={handleAddToCart}
               />
             ))}
           </div>
@@ -199,19 +171,32 @@ function CollectionDetailPage() {
 
       <section className="py-16 md:py-20">
         <div className="max-w-[1408px] mx-auto px-4 md:px-8 lg:px-16 text-center">
-          <h2 className="text-xl font-medium text-neutral-950 mb-4 tracking-[-0.48px]">
+          <h2 className="text-xl font-medium text-foreground mb-4 tracking-[-0.48px]">
             Explore More Collections
           </h2>
-          <p className="text-[#717182] tracking-[-0.48px] mb-8">
+          <p className="text-muted-foreground tracking-[-0.48px] mb-8">
             Discover other curated NEAR Protocol merchandise collections
           </p>
           <Link to="/collections">
-            <Button variant="outline" className="border-[rgba(0,0,0,0.1)]">
+            <Button variant="outline" className="border-border">
+              {/* View all items */}
               View All Collections
             </Button>
           </Link>
         </div>
       </section>
+
+      <SizeSelectionModal
+        product={sizeModalProduct}
+        isOpen={!!sizeModalProduct}
+        onClose={() => setSizeModalProduct(null)}
+        onAddToCart={handleAddToCartFromModal}
+      />
+
+      <CartSidebar
+        isOpen={isCartSidebarOpen}
+        onClose={() => setIsCartSidebarOpen(false)}
+      />
     </div>
   );
 }
@@ -219,8 +204,8 @@ function CollectionDetailPage() {
 interface CollectionProductCardProps {
   product: Product;
   isFavorite: boolean;
-  onToggleFavorite: (id: string) => void;
-  onAddToCart: (id: string) => void;
+  onToggleFavorite: (id: string, name: string) => void;
+  onAddToCart: (product: Product) => void;
 }
 
 function CollectionProductCard({
@@ -233,7 +218,7 @@ function CollectionProductCard({
 
   return (
     <div
-      className="group bg-white border border-[rgba(0,0,0,0.1)] overflow-hidden cursor-pointer"
+      className="group bg-card border border-border overflow-hidden cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -242,20 +227,20 @@ function CollectionProductCard({
         params={{ productId: product.id }}
         className="block"
       >
-        <div className="relative bg-[#ececf0] aspect-square overflow-hidden">
-          <img src={product.primaryImage} alt={product.name} className="w-full h-full object-cover" />
+        <div className="relative bg-muted aspect-square overflow-hidden">
+          <img src={product.images[0]?.url} alt={product.name} className="w-full h-full object-cover" />
 
           <button
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
-              onToggleFavorite(product.id);
+              onToggleFavorite(product.id, product.name);
             }}
-            className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm hover:bg-white transition-all z-10"
+            className="absolute top-3 right-3 p-2 bg-background/80 backdrop-blur-sm hover:bg-background transition-all z-10"
             aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
           >
             <Heart
-              className={cn('size-4', isFavorite ? 'fill-black stroke-black' : 'stroke-black')}
+              className={cn('size-4', isFavorite ? 'fill-primary stroke-primary' : 'stroke-foreground')}
             />
           </button>
 
@@ -269,9 +254,9 @@ function CollectionProductCard({
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                onAddToCart(product.id);
+                onAddToCart(product);
               }}
-              className="bg-neutral-950 text-white px-6 py-2 flex items-center gap-2 hover:bg-neutral-800 transition-colors tracking-[-0.48px] text-sm"
+              className="bg-primary text-primary-foreground px-6 py-2 flex items-center gap-2 hover:bg-primary/90 transition-colors tracking-[-0.48px] text-sm"
             >
               <Plus className="size-4" />
               QUICK ADD
@@ -280,13 +265,13 @@ function CollectionProductCard({
         </div>
 
         <div className="p-4">
-          <p className="text-xs text-[#717182] uppercase tracking-wider mb-1">
+          <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">
             {product.category}
           </p>
-          <h3 className="text-neutral-950 mb-2 line-clamp-2 tracking-[-0.48px] text-sm">
+          <h3 className="text-foreground mb-2 line-clamp-2 tracking-[-0.48px] text-sm">
             {product.name}
           </h3>
-          <p className="text-neutral-950 tracking-[-0.48px]">${product.price}</p>
+          <p className="text-foreground tracking-[-0.48px]">${product.price}</p>
         </div>
       </Link>
     </div>
