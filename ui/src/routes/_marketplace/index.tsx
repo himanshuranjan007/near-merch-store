@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { createFileRoute, /* Link, */ useRouter } from "@tanstack/react-router"; // HIDDEN: Link for collections
 import {
-  ArrowRight,
+  // ArrowRight, // HIDDEN: Collections feature
   AlertCircle,
   ChevronLeft,
   ChevronRight,
@@ -15,25 +15,26 @@ import { useCart } from "@/hooks/use-cart";
 import { useFavorites } from "@/hooks/use-favorites";
 import {
   useSuspenseFeaturedProducts,
-  useSuspenseCollections,
+  // useSuspenseCollections, // HIDDEN: Collections feature
   productLoaders,
-  collectionLoaders,
+  // collectionLoaders, // HIDDEN: Collections feature
   type ProductCategory,
   type Product,
 } from "@/integrations/marketplace-api";
 import { queryClient } from "@/utils/orpc";
 import manOnNearImage from "@/assets/images/pngs/man_on_near.png";
-import menCollectionsImage from "@/assets/images/pngs/men_collections.avif";
-import womenCollectionsImage from "@/assets/images/pngs/women_collections.avif";
-import nearLegionImage from "@/assets/images/pngs/near_legion.avif";
-import accessoriesImage from "@/assets/images/pngs/accessories.avif";
+// HIDDEN: Collections feature images
+// import menCollectionsImage from "@/assets/images/pngs/men_collections.avif";
+// import womenCollectionsImage from "@/assets/images/pngs/women_collections.avif";
+// import nearLegionImage from "@/assets/images/pngs/near_legion.avif";
+// import accessoriesImage from "@/assets/images/pngs/accessories.avif";
 
 export const Route = createFileRoute("/_marketplace/")({
   pendingComponent: LoadingSpinner,
   loader: async () => {
     await Promise.all([
       queryClient.ensureQueryData(productLoaders.featured(8)),
-      queryClient.ensureQueryData(collectionLoaders.list()),
+      // queryClient.ensureQueryData(collectionLoaders.list()), // HIDDEN: Collections feature
     ]);
   },
   errorComponent: ({ error }) => {
@@ -76,10 +77,10 @@ function MarketplaceHome() {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const { data: featuredData } = useSuspenseFeaturedProducts(8);
-  const { data: collectionsData } = useSuspenseCollections();
+  // const { data: collectionsData } = useSuspenseCollections(); // HIDDEN: Collections feature
 
   const featuredProducts = featuredData.products;
-  const collections = collectionsData.collections;
+  // const collections = collectionsData.collections; // HIDDEN: Collections feature
 
   // Filter products by selected category
   const filteredProducts =
@@ -229,11 +230,16 @@ function MarketplaceHome() {
                       transitionDelay: "0.3s",
                     }}
                   >
-                    <Link to="/collections">
-                      <button className="bg-white text-black px-8 py-3 hover:bg-white/90 transition-colors flex items-center font-medium rounded-none">
-                        {slide.buttonText}
-                      </button>
-                    </Link>
+                    {/* UPDATED: Changed from /collections to scroll to products section */}
+                    <button 
+                      onClick={() => {
+                        const productsSection = document.getElementById('products');
+                        productsSection?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="bg-white text-black px-8 py-3 hover:bg-white/90 transition-colors flex items-center font-medium rounded-none"
+                    >
+                      Shop Products
+                    </button>
                   </div>
                 </div>
 
@@ -318,8 +324,8 @@ function MarketplaceHome() {
       </section>
 
       {/* == Collections Section == */}
-
-      <section className=" ">
+      {/* HIDDEN: Collections section on homepage - uncomment to restore */}
+      {/* <section className=" ">
         <div className="max-w-[1408px] mx-auto px-4 md:px-8 lg:px-16 py-12 md:py-20 lg:py-24">
           <div className="flex flex-col items-center mb-8">
             <p className="mb-4 font-bold text-xl ">Shop by Collection</p>
@@ -386,7 +392,7 @@ function MarketplaceHome() {
             })}
           </div>
         </div>
-      </section>
+      </section> */}
       {/* == End Collections Section == */}
 
       {/* == Products Section == */}

@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/sheet";
 import { useCart } from "@/hooks/use-cart";
 import { useFavorites } from "@/hooks/use-favorites";
-import { COLLECTIONS } from "@/integrations/marketplace-api";
+// import { COLLECTIONS } from "@/integrations/marketplace-api"; // HIDDEN: Collections feature
 import { authClient } from "@/lib/auth-client";
 import logoFull from "@/assets/logo_full.png";
 
@@ -36,20 +36,22 @@ export function MarketplaceHeader() {
     }
   };
 
-  const collections = [
-    {
-      name: "Men",
-      href: "/collections/men",
-    },
-    {
-      name: "Women",
-      href: "/collections/women",
-    },
-    {
-      name: "Collections",
-      href: "/collections",
-    },
-  ];
+  // HIDDEN: Collections feature - uncomment to restore
+  // const collections = [
+  //   {
+  //     name: "Men",
+  //     href: "/collections/men",
+  //   },
+  //   {
+  //     name: "Women",
+  //     href: "/collections/women",
+  //   },
+  //   {
+  //     name: "Collections",
+  //     href: "/collections",
+  //   },
+  // ];
+  // const collections: Array<{ name: string; href: string }> = []; // HIDDEN: Unused variable
 
   return (
     <header className="bg-white border-b border-[rgba(0,0,0,0.1)] sticky top-0 z-50">
@@ -63,7 +65,8 @@ export function MarketplaceHeader() {
             />
           </Link>
 
-          <nav className="hidden md:flex items-center gap-6">
+          {/* HIDDEN: Collections navigation - uncomment to restore */}
+          {/* <nav className="hidden md:flex items-center gap-6">
             {collections.map((collection) => (
               <Link
                 key={collection.name}
@@ -73,7 +76,7 @@ export function MarketplaceHeader() {
                 {collection.name}
               </Link>
             ))}
-          </nav>
+          </nav> */}
 
           <div className="flex items-center gap-2 shrink-0">
             <form
@@ -169,7 +172,7 @@ export function MarketplaceHeader() {
                 <div className="flex flex-col gap-6 mt-8 px-4">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="font-semibold text-sm text-[#717182] uppercase tracking-wider">
-                      Collections
+                      Menu
                     </h3>
                     <SheetClose asChild>
                       <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -177,7 +180,8 @@ export function MarketplaceHeader() {
                       </Button>
                     </SheetClose>
                   </div>
-                  <div className="space-y-4">
+                  {/* HIDDEN: Collections mobile menu - uncomment to restore */}
+                  {/* <div className="space-y-4">
                     {collections.map((collection) => (
                       <Link
                         key={collection.name}
@@ -208,6 +212,9 @@ export function MarketplaceHeader() {
                     >
                       View All Collections
                     </Link>
+                  </div> */}
+                  <div className="space-y-4">
+                    <p className="text-black/60 text-sm">Browse our products</p>
                   </div>
                 </div>
               </SheetContent>
