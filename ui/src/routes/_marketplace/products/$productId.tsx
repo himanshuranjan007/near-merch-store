@@ -1,3 +1,4 @@
+import { FavoriteButton } from "@/components/favorite-button";
 import { LoadingSpinner } from "@/components/loading";
 import { ImageViewer } from "@/components/marketplace/image-viewer";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 import { queryClient } from "@/utils/orpc";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { AlertCircle, ArrowLeft, Heart, Minus, Plus } from "lucide-react";
+import { AlertCircle, ArrowLeft, Minus, Plus } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/_marketplace/products/$productId")({
@@ -108,8 +109,8 @@ function ProductDetailPage() {
   const needsSize = requiresSize(product.category) && hasVariants;
 
   const handleAddToCart = () => {
-    const size = getOptionValue(selectedVariant?.attributes || [], "size") 
-      || selectedVariant?.title 
+    const size = getOptionValue(selectedVariant?.attributes || [], "size")
+      || selectedVariant?.title
       || "N/A";
     for (let i = 0; i < quantity; i++) {
       addToCart(product.id, size);
@@ -179,15 +180,11 @@ function ProductDetailPage() {
                   {product.category}
                 </span>
               </div>
-              <button
-                onClick={() => toggleFavorite(product.id)}
-                className="p-2 hover:bg-gray-100 transition-colors"
-                aria-label={
-                  isFavorite ? "Remove from favorites" : "Add to favorites"
-                }
-              >
-                <Heart className={cn("size-5", isFavorite && "fill-black")} />
-              </button>
+              <FavoriteButton
+                isFavorite={isFavorite}
+                onToggle={() => toggleFavorite(product.id, product.title)}
+                variant="button"
+              />
             </div>
 
             <h1 className="text-2xl font-medium tracking-[-0.48px]">
