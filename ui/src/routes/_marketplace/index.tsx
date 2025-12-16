@@ -7,7 +7,7 @@ import { SizeSelectionModal } from "@/components/marketplace/size-selection-moda
 import { useCart } from "@/hooks/use-cart";
 import { useFavorites } from "@/hooks/use-favorites";
 import {
-  // useSuspenseCollections, // HIDDEN: Collections feature
+  // useSuspenseCollections, // HIDDEN:  Collections feature
   productLoaders,
   useFeaturedProducts,
   type Product
@@ -40,7 +40,7 @@ export const Route = createFileRoute("/_marketplace/")({
     //       collectionLoaders.list()
     //     );
 
-    //     // Prefetch collection details so product counts can be derived from query cache.
+    //     // Prefetch collection details so product counts can be derived from query cache. 
     //     await Promise.all(
     //       listData.collections.map((c) =>
     //         queryClient.ensureQueryData(collectionLoaders.detail(c.slug))
@@ -61,13 +61,13 @@ function MarketplaceHome() {
     null
   );
   const [isCartSidebarOpen, setIsCartSidebarOpen] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<NodeJS. Timeout | null>(null);
 
   const { data: featuredData, isLoading, isError } = useFeaturedProducts(12);
   // const { data: collectionsData } = useSuspenseCollections(); // HIDDEN: Collections feature
 
-  const featuredProducts = featuredData?.products ?? [];
-  // const collections = collectionsData.collections; // HIDDEN: Collections feature
+  const featuredProducts = featuredData?.products ??  [];
+  // const collections = collectionsData. collections; // HIDDEN: Collections feature
 
   const handleQuickAdd = (product: Product) => {
     setSizeModalProduct(product);
@@ -84,7 +84,7 @@ function MarketplaceHome() {
       badge: "EXCLUSIVE",
       title: "NEW LEGION",
       subtitle: "MERCH LAUNCHED",
-      description:
+      description: 
         "Represent the NEAR Legion with New Styles",
       buttonText: "Shop Items",
       image: nearLegionImage,
@@ -93,21 +93,21 @@ function MarketplaceHome() {
       glowColor: "#00ec97",
     },
     {
-      badge: "EXCLUSIVE",
-      title: "NEAR AI STYLES",
+      badge:  "EXCLUSIVE",
+      title:  "NEAR AI STYLES",
       subtitle: "AVAILABLE",
       description:
         "New styles for NEAR AI",
       buttonText: "Shop Items",
       image: nearAiImage,
-      gradientFrom: "#001a3d",
+      gradientFrom:  "#001a3d",
       gradientTo: "#0066cc",
-      glowColor: "#0066ff",
+      glowColor:  "#0066ff",
     },
   ];
 
   const nextSlide = () => {
-    if (!isAnimating) {
+    if (! isAnimating) {
       setIsAnimating(true);
       setTimeout(() => {
         setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -127,7 +127,7 @@ function MarketplaceHome() {
   };
 
   useEffect(() => {
-    if (!isPaused) {
+    if (! isPaused) {
       intervalRef.current = setInterval(() => {
         nextSlide();
       }, 8000); // Auto-scroll every 8 seconds
@@ -149,134 +149,142 @@ function MarketplaceHome() {
       <section 
         className="relative overflow-hidden transition-colors duration-500"
         style={{
-          background: `linear-gradient(to bottom, ${slides[currentSlide].gradientFrom}, ${slides[currentSlide].gradientTo})`
+          background: `linear-gradient(to bottom, ${slides[currentSlide]. gradientFrom}, ${slides[currentSlide].gradientTo})`
         }}
       >
         <div className="max-w-[1408px] mx-auto px-4 md:px-8 lg:px-16 py-8 md:py-20 lg:py-24">
           <div
-            key={index}
-            className={`absolute inset-0 transition-opacity duration-500 ${
-              index === currentSlide ? "opacity-100" : "opacity-0"
-            }`}
+            className="relative overflow-visible"
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
           >
-            {/* Background gradient overlay */}
-            <div 
-              className="absolute inset-0"
-              style={{
-                background: `linear-gradient(to right, ${slide.gradientFrom} 0%, ${slide.gradientFrom}dd 40%, ${slide.gradientFrom}88 70%, transparent 100%)`
-              }}
-            />
-            
-            {/* Full-width background image */}
-            <img
-              src={slide.image}
-              alt={slide.title}
-              className="absolute inset-0 w-full h-full object-cover object-center"
-              style={{
-                filter: "brightness(0.9) contrast(1.1)",
-              }}
-            />
-            
-            {/* Content overlay */}
-            <div className="relative z-10 max-w-[1408px] mx-auto px-4 md:px-8 lg:px-16 py-12 md:py-20 lg:py-24 h-full flex items-center">
-              <div className="text-white space-y-6 max-w-2xl">
-                <div
-                  className={`inline-block bg-white/10 backdrop-blur-sm px-4 py-2 text-sm text-white/80 mb-4 uppercase font-bold transition-all duration-700 ease-out ${
-                    !isAnimating
-                      ? "translate-y-0 opacity-100"
-                      : "-translate-y-full opacity-0"
-                  }`}
+            {slides. map((slide, index) => (
+              <div
+                key={index}
+                className={`absolute inset-0 transition-opacity duration-500 ${
+                  index === currentSlide ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                {/* Background gradient overlay */}
+                <div 
+                  className="absolute inset-0"
                   style={{
-                    transitionTimingFunction:
-                      "cubic-bezier(0.34, 1.56, 0.64, 1)",
+                    background: `linear-gradient(to right, ${slide.gradientFrom} 0%, ${slide.gradientFrom}dd 40%, ${slide.gradientFrom}88 70%, transparent 100%)`
                   }}
-                >
-                  {slide.badge}
-                </div>
-
-                {/* Image Section with zoom animation */}
-                <div className="hidden lg:block relative h-full min-h-[500px]">
-                  <div className="relative w-full h-full flex items-end justify-end overflow-hidden">
-                    {/* Large glowing orb with fill animation */}
+                />
+                
+                {/* Full-width background image */}
+                <img
+                  src={slide.image}
+                  alt={slide. title}
+                  className="absolute inset-0 w-full h-full object-cover object-center"
+                  style={{
+                    filter: "brightness(0.9) contrast(1.1)",
+                  }}
+                />
+                
+                {/* Content overlay */}
+                <div className="relative z-10 max-w-[1408px] mx-auto px-4 md:px-8 lg:px-16 py-12 md:py-20 lg:py-24 h-full flex items-center">
+                  <div className="text-white space-y-6 max-w-2xl">
                     <div
-                      className={`absolute top-0 right-1/3 -translate-y-1/4 rounded-full blur-[120px] transition-all duration-800 ease-out ${
-                        !isAnimating
-                          ? "w-[500px] h-[500px] opacity-30"
-                          : "w-0 h-0 opacity-0"
+                      className={`inline-block bg-white/10 backdrop-blur-sm px-4 py-2 text-sm text-white/80 mb-4 uppercase font-bold transition-all duration-700 ease-out ${
+                        ! isAnimating
+                          ? "translate-y-0 opacity-100"
+                          : "-translate-y-full opacity-0"
                       }`}
                       style={{
-                        backgroundColor: slide.glowColor,
-                        transitionTimingFunction:
-                          "cubic-bezier(0.34, 1.56, 0.64, 1)",
-                      }}
-                    />
-
-                    {/* Main image with zoom animation */}
-                    <div
-                      className={`relative z-10 transition-all duration-800 ease-out ${
-                        !isAnimating
-                          ? "scale-100 opacity-100"
-                          : "scale-75 opacity-0"
-                      }`}
-                      style={{
-                        transitionTimingFunction:
+                        transitionTimingFunction: 
                           "cubic-bezier(0.34, 1.56, 0.64, 1)",
                       }}
                     >
-                      <img
-                        src={slide.image}
-                        alt={slide.title}
-                        className="w-auto h-auto max-w-[90%] max-h-[600px] object-contain object-bottom-right"
-                        style={{
-                          filter:
-                            "drop-shadow(0 35px 70px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 80px rgba(0, 236, 151, 0.3)) contrast(1.1) brightness(1.05)",
-                        }}
-                      />
+                      {slide.badge}
                     </div>
 
-                    {/* Grid overlay for tech feel */}
-                    <div
-                      className="absolute inset-0 opacity-10"
-                      style={{
-                        backgroundImage:
-                          "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-                        backgroundSize: "50px 50px",
-                      }}
-                    />
+                    {/* Image Section with zoom animation */}
+                    <div className="hidden lg:block relative h-full min-h-[500px]">
+                      <div className="relative w-full h-full flex items-end justify-end overflow-hidden">
+                        {/* Large glowing orb with fill animation */}
+                        <div
+                          className={`absolute top-0 right-1/3 -translate-y-1/4 rounded-full blur-[120px] transition-all duration-800 ease-out ${
+                            ! isAnimating
+                              ? "w-[500px] h-[500px] opacity-30"
+                              : "w-0 h-0 opacity-0"
+                          }`}
+                          style={{
+                            backgroundColor: slide.glowColor,
+                            transitionTimingFunction: 
+                              "cubic-bezier(0.34, 1.56, 0.64, 1)",
+                          }}
+                        />
 
-                    {/* Animated scan line */}
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#00ec97] to-transparent animate-scan" />
+                        {/* Main image with zoom animation */}
+                        <div
+                          className={`relative z-10 transition-all duration-800 ease-out ${
+                            !isAnimating
+                              ?  "scale-100 opacity-100"
+                              : "scale-75 opacity-0"
+                          }`}
+                          style={{
+                            transitionTimingFunction:
+                              "cubic-bezier(0.34, 1.56, 0.64, 1)",
+                          }}
+                        >
+                          <img
+                            src={slide.image}
+                            alt={slide. title}
+                            className="w-auto h-auto max-w-[90%] max-h-[600px] object-contain object-bottom-right"
+                            style={{
+                              filter: 
+                                "drop-shadow(0 35px 70px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 80px rgba(0, 236, 151, 0.3)) contrast(1.1) brightness(1.05)",
+                            }}
+                          />
+                        </div>
+
+                        {/* Grid overlay for tech feel */}
+                        <div
+                          className="absolute inset-0 opacity-10"
+                          style={{
+                            backgroundImage: 
+                              "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
+                            backgroundSize: "50px 50px",
+                          }}
+                        />
+
+                        {/* Animated scan line */}
+                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#00ec97] to-transparent animate-scan" />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
-        ))}
-        
-        {/* Navigation buttons */}
-        <div className="absolute bottom-8 right-4 md:right-8 lg:right-16 flex items-center gap-3 z-20">
-          <button
-            onClick={prevSlide}
-            type="button"
-            className="group flex items-center justify-center w-12 h-12 rounded-full border border-white/20 bg-black/20 backdrop-blur-md hover:bg-white hover:text-black hover:border-white transition-all duration-300 cursor-pointer"
-            aria-label="Previous"
-          >
-            <ChevronLeft
-              className="h-5 w-5 text-white group-hover:text-black transition-colors"
-              aria-hidden="true"
-            />
-          </button>
-          <button
-            onClick={nextSlide}
-            type="button"
-            className="group flex items-center justify-center w-12 h-12 rounded-full border border-white/20 bg-black/20 backdrop-blur-md hover:bg-white hover:text-black hover:border-white transition-all duration-300 cursor-pointer"
-            aria-label="Next"
-          >
-            <ChevronRight
-              className="h-5 w-5 text-white group-hover:text-black transition-colors"
-              aria-hidden="true"
-            />
-          </button>
+          
+          {/* Navigation buttons */}
+          <div className="absolute bottom-8 right-4 md:right-8 lg:right-16 flex items-center gap-3 z-20">
+            <button
+              onClick={prevSlide}
+              type="button"
+              className="group flex items-center justify-center w-12 h-12 rounded-full border border-white/20 bg-black/20 backdrop-blur-md hover:bg-white hover:text-black hover:border-white transition-all duration-300 cursor-pointer"
+              aria-label="Previous"
+            >
+              <ChevronLeft
+                className="h-5 w-5 text-white group-hover:text-black transition-colors"
+                aria-hidden="true"
+              />
+            </button>
+            <button
+              onClick={nextSlide}
+              type="button"
+              className="group flex items-center justify-center w-12 h-12 rounded-full border border-white/20 bg-black/20 backdrop-blur-md hover:bg-white hover:text-black hover:border-white transition-all duration-300 cursor-pointer"
+              aria-label="Next"
+            >
+              <ChevronRight
+                className="h-5 w-5 text-white group-hover:text-black transition-colors"
+                aria-hidden="true"
+              />
+            </button>
+          </div>
         </div>
       </section>
 
@@ -285,7 +293,7 @@ function MarketplaceHome() {
       {/* <section className=" ">
         <div className="max-w-[1408px] mx-auto px-4 md:px-8 lg:px-16 py-12 md:py-20 lg:py-24">
           <div className="flex flex-col items-center mb-12 text-center">
-            <h2 className="mb-4 font-bold text-3xl md:text-4xl tracking-tight">Shop by Collection</h2>
+            <h2 className="mb-4 font-bold text-3xl md: text-4xl tracking-tight">Shop by Collection</h2>
             <p className="text-muted-foreground text-lg max-w-2xl">
               Explore our curated collections of premium NEAR Protocol
               merchandise
@@ -295,11 +303,11 @@ function MarketplaceHome() {
             {collections.map((collection) => {
               const imageSrc = collection.image;
 
-              // Product count is derived from the prefetched detail query.
+              // Product count is derived from the prefetched detail query. 
               const detailData = queryClient.getQueryData(
                 collectionLoaders.detail(collection.slug).queryKey
-              ) as { products?: unknown[] } | undefined;
-              const productCount = detailData?.products?.length ?? 0;
+              ) as { products?:  unknown[] } | undefined;
+              const productCount = detailData?.products?.length ??  0;
 
               return (
                 <Link
@@ -311,7 +319,7 @@ function MarketplaceHome() {
                   <div className="absolute inset-0">
                     <img
                       src={imageSrc}
-                      alt={collection.name}
+                      alt={collection. name}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -343,7 +351,7 @@ function MarketplaceHome() {
       {/* == Products Section == */}
 
       <section className="py-16 md:py-20 border-t border-border" id="products">
-        <div className="max-w-[1408px] mx-auto px-4 md:px-8 lg:px-16">
+        <div className="max-w-[1408px] mx-auto px-4 md:px-8 lg: px-16">
           {featuredProducts.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <div className="text-muted-foreground mb-4">
@@ -366,7 +374,7 @@ function MarketplaceHome() {
                 </h3>
                 <p className="text-sm max-w-md">
                   There are currently no products available in the marketplace.
-                  {isError && " The API may be temporarily unavailable."}
+                  {isError && " The API may be temporarily unavailable. "}
                 </p>
               </div>
             </div>
