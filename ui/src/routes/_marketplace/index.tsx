@@ -147,144 +147,122 @@ function MarketplaceHome() {
   return (
     <div>
       <section 
-        className="relative overflow-hidden transition-colors duration-500"
-        style={{
-          background: `linear-gradient(to bottom, ${slides[currentSlide]. gradientFrom}, ${slides[currentSlide].gradientTo})`
-        }}
+        className="relative w-full h-[500px] md:h-[600px] lg:h-[700px] overflow-hidden"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
       >
-        <div className="max-w-[1408px] mx-auto px-4 md:px-8 lg:px-16 py-8 md:py-20 lg:py-24">
+        {slides.map((slide, index) => (
           <div
-            className="relative overflow-visible"
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
+            key={index}
+            className={`absolute inset-0 w-full h-full transition-opacity duration-500 ${
+              index === currentSlide ? "opacity-100" : "opacity-0"
+            }`}
           >
-            {slides. map((slide, index) => (
-              <div
-                key={index}
-                className={`absolute inset-0 transition-opacity duration-500 ${
-                  index === currentSlide ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                {/* Background gradient overlay */}
-                <div 
-                  className="absolute inset-0"
-                  style={{
-                    background: `linear-gradient(to right, ${slide.gradientFrom} 0%, ${slide.gradientFrom}dd 40%, ${slide.gradientFrom}88 70%, transparent 100%)`
-                  }}
-                />
-                
-                {/* Full-width background image */}
-                <img
-                  src={slide.image}
-                  alt={slide. title}
-                  className="absolute inset-0 w-full h-full object-cover object-center"
-                  style={{
-                    filter: "brightness(0.9) contrast(1.1)",
-                  }}
-                />
-                
-                {/* Content overlay */}
-                <div className="relative z-10 max-w-[1408px] mx-auto px-4 md:px-8 lg:px-16 py-12 md:py-20 lg:py-24 h-full flex items-center">
-                  <div className="text-white space-y-6 max-w-2xl">
-                    <div
-                      className={`inline-block bg-white/10 backdrop-blur-sm px-4 py-2 text-sm text-white/80 mb-4 uppercase font-bold transition-all duration-700 ease-out ${
-                        ! isAnimating
-                          ? "translate-y-0 opacity-100"
-                          : "-translate-y-full opacity-0"
-                      }`}
-                      style={{
-                        transitionTimingFunction: 
-                          "cubic-bezier(0.34, 1.56, 0.64, 1)",
-                      }}
-                    >
-                      {slide.badge}
-                    </div>
-
-                    {/* Image Section with zoom animation */}
-                    <div className="hidden lg:block relative h-full min-h-[500px]">
-                      <div className="relative w-full h-full flex items-end justify-end overflow-hidden">
-                        {/* Large glowing orb with fill animation */}
-                        <div
-                          className={`absolute top-0 right-1/3 -translate-y-1/4 rounded-full blur-[120px] transition-all duration-800 ease-out ${
-                            ! isAnimating
-                              ? "w-[500px] h-[500px] opacity-30"
-                              : "w-0 h-0 opacity-0"
-                          }`}
-                          style={{
-                            backgroundColor: slide.glowColor,
-                            transitionTimingFunction: 
-                              "cubic-bezier(0.34, 1.56, 0.64, 1)",
-                          }}
-                        />
-
-                        {/* Main image with zoom animation */}
-                        <div
-                          className={`relative z-10 transition-all duration-800 ease-out ${
-                            !isAnimating
-                              ?  "scale-100 opacity-100"
-                              : "scale-75 opacity-0"
-                          }`}
-                          style={{
-                            transitionTimingFunction:
-                              "cubic-bezier(0.34, 1.56, 0.64, 1)",
-                          }}
-                        >
-                          <img
-                            src={slide.image}
-                            alt={slide. title}
-                            className="w-auto h-auto max-w-[90%] max-h-[600px] object-contain object-bottom-right"
-                            style={{
-                              filter: 
-                                "drop-shadow(0 35px 70px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 80px rgba(0, 236, 151, 0.3)) contrast(1.1) brightness(1.05)",
-                            }}
-                          />
-                        </div>
-
-                        {/* Grid overlay for tech feel */}
-                        <div
-                          className="absolute inset-0 opacity-10"
-                          style={{
-                            backgroundImage: 
-                              "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-                            backgroundSize: "50px 50px",
-                          }}
-                        />
-
-                        {/* Animated scan line */}
-                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#00ec97] to-transparent animate-scan" />
-                      </div>
-                    </div>
+            {/* Full-width background image */}
+            <img
+              src={slide.image}
+              alt={slide.title}
+              className="absolute inset-0 w-full h-full object-cover object-center"
+            />
+            
+            {/* Gradient overlay for text readability */}
+            <div 
+              className="absolute inset-0 z-10"
+              style={{
+                background: `linear-gradient(to right, ${slide.gradientFrom}ee 0%, ${slide.gradientFrom}99 35%, ${slide.gradientFrom}44 65%, transparent 100%)`
+              }}
+            />
+            
+            {/* Content overlay */}
+            <div className="absolute inset-0 z-20">
+              <div className="max-w-[1408px] mx-auto px-4 md:px-8 lg:px-16 h-full flex items-center">
+                <div className="text-white space-y-4 md:space-y-6 max-w-xl">
+                  <div
+                    className={`inline-block bg-white/10 backdrop-blur-sm px-4 py-2 text-xs md:text-sm text-white/90 uppercase font-bold tracking-wider transition-all duration-700 ease-out ${
+                      !isAnimating
+                        ? "translate-y-0 opacity-100"
+                        : "-translate-y-full opacity-0"
+                    }`}
+                    style={{
+                      transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+                    }}
+                  >
+                    {slide.badge}
                   </div>
+
+                  <h1
+                    className={`text-4xl md:text-6xl lg:text-7xl font-bold leading-tight transition-all duration-700 ease-out ${
+                      !isAnimating
+                        ? "translate-x-0 opacity-100"
+                        : "-translate-x-full opacity-0"
+                    }`}
+                    style={{
+                      transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+                      transitionDelay: "100ms",
+                    }}
+                  >
+                    {slide.title}
+                    <br />
+                    {slide.subtitle}
+                  </h1>
+
+                  <p
+                    className={`text-base md:text-lg text-white/90 transition-all duration-700 ease-out ${
+                      !isAnimating
+                        ? "translate-x-0 opacity-100"
+                        : "-translate-x-full opacity-0"
+                    }`}
+                    style={{
+                      transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+                      transitionDelay: "200ms",
+                    }}
+                  >
+                    {slide.description}
+                  </p>
+
+                  <button
+                    className={`bg-white text-black px-6 md:px-8 py-3 md:py-4 text-sm md:text-base font-semibold hover:bg-white/90 transition-all duration-700 ease-out ${
+                      !isAnimating
+                        ? "translate-y-0 opacity-100"
+                        : "translate-y-full opacity-0"
+                    }`}
+                    style={{
+                      transitionTimingFunction: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+                      transitionDelay: "300ms",
+                    }}
+                  >
+                    {slide.buttonText}
+                  </button>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
-          
-          {/* Navigation buttons */}
-          <div className="absolute bottom-8 right-4 md:right-8 lg:right-16 flex items-center gap-3 z-20">
-            <button
-              onClick={prevSlide}
-              type="button"
-              className="group flex items-center justify-center w-12 h-12 rounded-full border border-white/20 bg-black/20 backdrop-blur-md hover:bg-white hover:text-black hover:border-white transition-all duration-300 cursor-pointer"
-              aria-label="Previous"
-            >
-              <ChevronLeft
-                className="h-5 w-5 text-white group-hover:text-black transition-colors"
-                aria-hidden="true"
-              />
-            </button>
-            <button
-              onClick={nextSlide}
-              type="button"
-              className="group flex items-center justify-center w-12 h-12 rounded-full border border-white/20 bg-black/20 backdrop-blur-md hover:bg-white hover:text-black hover:border-white transition-all duration-300 cursor-pointer"
-              aria-label="Next"
-            >
-              <ChevronRight
-                className="h-5 w-5 text-white group-hover:text-black transition-colors"
-                aria-hidden="true"
-              />
-            </button>
-          </div>
+        ))}
+        
+        {/* Navigation buttons */}
+        <div className="absolute bottom-6 md:bottom-8 right-4 md:right-8 lg:right-16 flex items-center gap-3 z-30">
+          <button
+            onClick={prevSlide}
+            type="button"
+            className="group flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/20 bg-black/20 backdrop-blur-md hover:bg-white hover:text-black hover:border-white transition-all duration-300 cursor-pointer"
+            aria-label="Previous"
+          >
+            <ChevronLeft
+              className="h-4 w-4 md:h-5 md:w-5 text-white group-hover:text-black transition-colors"
+              aria-hidden="true"
+            />
+          </button>
+          <button
+            onClick={nextSlide}
+            type="button"
+            className="group flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full border border-white/20 bg-black/20 backdrop-blur-md hover:bg-white hover:text-black hover:border-white transition-all duration-300 cursor-pointer"
+            aria-label="Next"
+          >
+            <ChevronRight
+              className="h-4 w-4 md:h-5 md:w-5 text-white group-hover:text-black transition-colors"
+              aria-hidden="true"
+            />
+          </button>
         </div>
       </section>
 
