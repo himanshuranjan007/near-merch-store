@@ -223,7 +223,14 @@ function MarketplaceHome() {
                         "cubic-bezier(0.34, 1.56, 0.64, 1)",
                       transitionDelay: "0.3s",
                     }}
-                  ></div>
+                  >
+                    <button
+                      type="button"
+                      className="px-6 py-3 bg-white text-black font-bold uppercase text-sm hover:bg-white/90 transition-colors"
+                    >
+                      {slide.buttonText}
+                    </button>
+                  </div>
                 </div>
 
                 {/* Image Section with zoom animation */}
