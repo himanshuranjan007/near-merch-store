@@ -4,7 +4,7 @@ import { ProductCard } from "@/components/marketplace/product-card";
 import { SizeSelectionModal } from "@/components/marketplace/size-selection-modal";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/hooks/use-cart";
-import { useFavorites } from "@/hooks/use-favorites";
+
 import {
   productLoaders,
   useProducts,
@@ -32,7 +32,6 @@ export const Route = createFileRoute("/_marketplace/products/")({
 
 function ProductsIndexPage() {
   const { addToCart } = useCart();
-  const { favoriteIds, toggleFavorite } = useFavorites();
   const [selectedCategory, setSelectedCategory] = useState<ProductCategory | 'all'>('all');
   const [sizeModalProduct, setSizeModalProduct] = useState<Product | null>(null);
   const [isCartSidebarOpen, setIsCartSidebarOpen] = useState(false);
@@ -163,8 +162,6 @@ function ProductsIndexPage() {
                   <ProductCard
                     key={product.id}
                     product={product}
-                    isFavorite={favoriteIds.includes(product.id)}
-                    onToggleFavorite={toggleFavorite}
                     onQuickAdd={handleQuickAdd}
                   />
                 ))}
