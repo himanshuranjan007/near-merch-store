@@ -7,6 +7,7 @@ import { apiClient } from '@/utils/orpc';
 import { toast } from 'sonner';
 import { authClient } from '@/lib/auth-client';
 import { Checkbox } from '@/components/ui/checkbox';
+import { NearMark } from '@/components/near-mark';
 
 export const Route = createFileRoute("/_marketplace/checkout")({
   component: CheckoutPage,
@@ -94,7 +95,7 @@ function CheckoutPage() {
               <div className="space-y-4">
                 {cartItems.map((item) => (
                   <div key={item.productId} className="flex gap-4">
-                    <div className="size-20 bg-[#ececf0] border border-[rgba(0,0,0,0.1)] flex-shrink-0 overflow-hidden">
+                    <div className="size-20 bg-[#ececf0] border border-[rgba(0,0,0,0.1)] shrink-0 overflow-hidden">
                       <img
                         src={item.product.images[0].url}
                         alt={item.product.title}
@@ -188,10 +189,8 @@ function CheckoutPage() {
                 <div className="space-y-6">
               <div className="w-full border border-border p-6 text-left relative opacity-50 cursor-not-allowed">
                 <div className="flex items-start gap-3">
-                  <div className="size-10 bg-[#00ec97] flex items-center justify-center flex-shrink-0">
-                    <svg className="size-6" fill="none" viewBox="0 0 24 24">
-                      <path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="black" />
-                    </svg>
+                  <div className="size-10 bg-[#00ec97] flex items-center justify-center shrink-0">
+                    <NearMark className="size-6 text-black" />
                   </div>
 
                   <div className="flex-1">
@@ -218,7 +217,7 @@ function CheckoutPage() {
                 className="block w-full border border-border p-6 hover:border-neutral-950 transition-colors text-left disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <div className="flex items-start gap-3">
-                  <div className="size-10 bg-[#d6d3ff] flex items-center justify-center flex-shrink-0">
+                  <div className="size-10 bg-[#d6d3ff] flex items-center justify-center shrink-0">
                     {checkoutMutation.isPending ? (
                       <div className="animate-spin size-5 border-2 border-[#635BFF]/30 border-t-[#635BFF] rounded-full" />
                     ) : (
