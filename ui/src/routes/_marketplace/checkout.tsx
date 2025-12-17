@@ -139,14 +139,44 @@ function CheckoutPage() {
       shipping: undefined,
     } as AddressFormData,
     onSubmit: async ({ value }) => {
-      console.log('Form submitted:', value);
-      // This will be called when payment is initiated
+      // Calculate shipping when form is submitted
+      await handleCalculateShipping(value);
+    },
+  });
+
+  const quoteMutation = useMutation({
+    mutationFn: async (params: {
+      items: Array<{ productId: string; variantId?: string; quantity: number }>;
+      shippingAddress: {
+        firstName: string;
+        lastName: string;
+        addressLine1: string;
+        addressLine2?: string;
+        city: string;
+        state: string;
+        postCode: string;
+        country: string;
+        email: string;
+        phone?: string;
+      };
+    }) => {
+      return await apiClient.quote(params);
+    },
+    onSuccess: (data) => {
+      setShippingQuote(data);
+      toast.success('Shipping calculated successfully');
+    },
+    onError: (error: Error) => {
+      toast.error('Failed to calculate shipping', {
+        description: error.message || 'Please try again',
+      });
     },
   });
 
   const checkoutMutation = useMutation({
     mutationFn: async (formData: AddressFormData) => {
       if (cartItems.length === 0) throw new Error('Cart is empty');
+      if (!shippingQuote) throw new Error('Please calculate shipping first');
 
       // Use shipping address if provided, otherwise use billing address
       const addressData = shipToDifferentAddress && formData.shipping
@@ -157,9 +187,16 @@ function CheckoutPage() {
       const countryMapping = countryOptions.find(c => c.name === addressData.country);
       const countryCode = countryMapping?.code || 'US';
 
+      // Build selectedRates from quote
+      const selectedRates: Record<string, string> = {};
+      shippingQuote.providerBreakdown.forEach(provider => {
+        selectedRates[provider.provider] = provider.selectedShipping.rateId;
+      });
+
       const result = await apiClient.createCheckout({
         items: cartItems.map((item) => ({
           productId: item.productId,
+          variantId: item.size !== 'N/A' ? item.size : undefined,
           quantity: item.quantity,
         })),
         shippingAddress: {
@@ -174,8 +211,8 @@ function CheckoutPage() {
           email: formData.billing.email,
           phone: formData.billing.phone,
         },
-        selectedRates: {},
-        shippingCost: 0,
+        selectedRates,
+        shippingCost: shippingQuote.shippingCost,
         successUrl: `${window.location.origin}/order-confirmation`,
         cancelUrl: `${window.location.origin}/checkout`,
       });
@@ -194,6 +231,43 @@ function CheckoutPage() {
       });
     },
   });
+
+  const handleCalculateShipping = async (formData: AddressFormData) => {
+    setIsCalculatingShipping(true);
+    
+    // Use shipping address if provided, otherwise use billing address
+    const addressData = shipToDifferentAddress && formData.shipping
+      ? formData.shipping
+      : formData.billing;
+
+    // Convert country name to 2-letter code
+    const countryMapping = countryOptions.find(c => c.name === addressData.country);
+    const countryCode = countryMapping?.code || 'US';
+
+    try {
+      await quoteMutation.mutateAsync({
+        items: cartItems.map((item) => ({
+          productId: item.productId,
+          variantId: item.size !== 'N/A' ? item.size : undefined,
+          quantity: item.quantity,
+        })),
+        shippingAddress: {
+          firstName: addressData.firstName,
+          lastName: addressData.lastName,
+          addressLine1: addressData.address1,
+          addressLine2: addressData.address2,
+          city: addressData.city,
+          state: addressData.state,
+          postCode: addressData.zip,
+          country: countryCode,
+          email: formData.billing.email,
+          phone: formData.billing.phone,
+        },
+      });
+    } finally {
+      setIsCalculatingShipping(false);
+    }
+  };
 
   const handlePayWithCard = async () => {
     // Check if user is authenticated before proceeding with checkout
@@ -227,6 +301,13 @@ function CheckoutPage() {
         toast.error('Please fill in all required shipping fields');
         return;
       }
+    }
+
+    // Calculate shipping if not already done
+    if (!shippingQuote) {
+      await handleCalculateShipping(formData);
+      // Don't proceed to checkout yet, let user review shipping cost
+      return;
     }
     
     checkoutMutation.mutate(formData);
@@ -636,6 +717,32 @@ function CheckoutPage() {
                   />
                 </div>
               )}
+
+              {/* Calculate Shipping Button */}
+              <div className="pt-6">
+                <button
+                  type="button"
+                  onClick={() => handleCalculateShipping(form.state.values)}
+                  disabled={isCalculatingShipping || quoteMutation.isPending}
+                  className="w-full bg-neutral-950 text-white py-3 px-6 hover:bg-neutral-800 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                >
+                  {isCalculatingShipping || quoteMutation.isPending ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <div className="animate-spin size-4 border-2 border-white/30 border-t-white rounded-full" />
+                      Calculating Shipping...
+                    </span>
+                  ) : shippingQuote ? (
+                    'Recalculate Shipping'
+                  ) : (
+                    'Calculate Shipping'
+                  )}
+                </button>
+                {shippingQuote && (
+                  <p className="text-sm text-green-600 mt-2 text-center">
+                    ✓ Shipping calculated: ${shippingCost.toFixed(2)}
+                  </p>
+                )}
+              </div>
             </form>
           </div>
 
@@ -679,8 +786,24 @@ function CheckoutPage() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-[#717182]">Shipping</span>
-                  <span>Free</span>
+                  <span>
+                    {isCalculatingShipping ? (
+                      <span className="text-muted-foreground">Calculating...</span>
+                    ) : shippingQuote ? (
+                      `$${shippingCost.toFixed(2)}`
+                    ) : (
+                      <span className="text-muted-foreground">Calculated at checkout</span>
+                    )}
+                  </span>
                 </div>
+                {shippingQuote?.estimatedDelivery && (
+                  <div className="flex justify-between text-sm">
+                    <span className="text-[#717182]">Estimated Delivery</span>
+                    <span className="text-xs">
+                      {shippingQuote.estimatedDelivery.minDays}-{shippingQuote.estimatedDelivery.maxDays} business days
+                    </span>
+                  </div>
+                )}
                 <div className="flex justify-between text-sm">
                   <span className="text-[#717182]">Tax</span>
                   <span>${tax.toFixed(2)}</span>
