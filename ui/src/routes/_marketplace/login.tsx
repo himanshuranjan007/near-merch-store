@@ -1,4 +1,4 @@
-import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
@@ -23,6 +23,7 @@ export const Route = createFileRoute("/_marketplace/login")({
 });
 
 function LoginPage() {
+  const [isExpanded, setIsExpanded] = useState(false);
   const navigate = useNavigate();
   const { redirect } = Route.useSearch();
 
@@ -66,11 +67,12 @@ function LoginPage() {
       await authClient.signIn.near(
         { recipient: "marketplace-demo.near" },
         {
-          onSuccess: () => {
+          onSuccess: async () => {
             setIsSigningInWithNear(false);
             queryClient.invalidateQueries();
             navigate({ to: redirect ?? "/account", replace: true });
             toast.success(`Signed in as: ${accountId}`);
+            window.location.href = "/account";
           },
           onError: (error: any) => {
             setIsSigningInWithNear(false);

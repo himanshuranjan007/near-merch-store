@@ -27,6 +27,9 @@ export {
   useSuspenseSearchProducts,
   useProductsByIds,
   productLoaders,
+  useSyncStatus,
+  useSyncProducts,
+  useUpdateProductListing,
   type Product,
   type ProductImage,
 } from './products';

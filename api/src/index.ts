@@ -205,7 +205,14 @@ export default createPlugin({
           }).pipe(Effect.provide(appLayer))
         );
       }),
-
+      updateProductListing: builder.updateProductListing.handler(async ({ input }) => {
+        return await Effect.runPromise(
+          Effect.gen(function* () {
+            const service = yield* ProductService;
+            return yield* service.updateProductListing(input.id, input.listed);
+          }).pipe(Effect.provide(appLayer))
+        );
+      }),
       createCheckout: builder.createCheckout
         .use(requireAuth)
         .handler(async ({ input, context }) => {

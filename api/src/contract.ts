@@ -42,6 +42,7 @@ export const contract = oc.router({
         category: ProductCategorySchema.optional(),
         limit: z.number().int().positive().max(100).default(50),
         offset: z.number().int().min(0).default(0),
+        includeUnlisted: z.boolean().optional(),
       })
     )
     .output(
@@ -281,31 +282,51 @@ export const contract = oc.router({
         errorMessage: z.string().nullable(),
       })
     ),
-
-  cleanupAbandonedDrafts: oc
+  updateProductListing: oc
     .route({
       method: 'POST',
-      path: '/cron/cleanup-drafts',
-      summary: 'Cleanup abandoned draft orders',
-      description: 'Cancels draft orders older than 24 hours. Intended to be called by a cron job daily.',
-      tags: ['Jobs'],
+      path: '/products/{id}/listing',
+      summary: 'Update product listing status',
+      description: 'Updates whether a product is listed (visible) in the store.',
+      tags: ['Products'],
     })
     .input(
       z.object({
-        maxAgeHours: z.number().int().positive().default(24).optional(),
+        id: z.string(),
+        listed: z.boolean(),
       })
     )
     .output(
       z.object({
-        totalProcessed: z.number(),
-        cancelled: z.number(),
-        partiallyCancelled: z.number(),
-        failed: z.number(),
-        errors: z.array(z.object({
-          orderId: z.string(),
-          provider: z.string(),
-          error: z.string(),
-        })),
+        success: z.boolean(),
+        product: ProductSchema.optional(),
       })
     ),
+    cleanupAbandonedDrafts: oc
+      .route({
+        method: 'POST',
+        path: '/cron/cleanup-drafts',
+        summary: 'Cleanup abandoned draft orders',
+        description: 'Cancels draft orders older than 24 hours. Intended to be called by a cron job daily.',
+        tags: ['Jobs'],
+      })
+      .input(
+        z.object({
+          maxAgeHours: z.number().int().positive().default(24).optional()
+        })
+      )
+      .output(
+        z.object({
+          totalProcessed: z.number(),
+          cancelled: z.number(),
+          partiallyCancelled: z.number(),
+          failed: z.number(),
+          errors: z.array(z.object({
+            orderId: z.string(),
+            provider: z.string(),
+            error: z.string(),
+          })),
+        })
+    )
+      
 });
