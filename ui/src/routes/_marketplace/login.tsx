@@ -166,12 +166,12 @@ function LoginPage() {
                 disabled={isLoading}
                 className="w-full bg-primary text-primary-foreground border-2 border-primary px-6 py-5 flex items-center justify-center gap-3 hover:bg-primary/90 transition-colors disabled:opacity-50"
               >
-                <div className="size-6 flex items-center justify-center">
-                <img
-                  src={nearLogo}
-                  alt="NEAR"
-                  className="w-full h-full object-contain invert dark:invert-0"
-                />
+                <div className="size-6 overflow-hidden flex items-center justify-center">
+                  <img
+                    src={nearLogo}
+                    alt="NEAR"
+                    className="w-full h-full object-contain invert dark:invert-0"
+                  />
                 </div>
                 <span className="text-sm">
                   {isSigningInWithNear
