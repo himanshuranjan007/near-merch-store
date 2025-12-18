@@ -9,7 +9,7 @@
     "ui": {
       "name": "marketplace_ui",
       "development": "http://localhost:3002",
-      "production": "https://elliot-braem-1220-marketplace-ui-near-merch-store-8263ea12d-ze.zephyrcloud.app",
+      "production": "https://elliot-braem-1224-marketplace-ui-near-merch-store-dfb29b2ff-ze.zephyrcloud.app",
       "exposes": {
         "App": "./App",
         "components": "./components",
