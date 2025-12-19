@@ -613,7 +613,7 @@ function CheckoutPage() {
                     ) : shippingQuote ? (
                       `$${shippingCost.toFixed(2)}`
                     ) : (
-                      <span className="text-muted-foreground">Calculated at checkout</span>
+                      <span className="text-muted-foreground">Waiting for shipping quote...</span>
                     )}
                   </span>
                 </div>

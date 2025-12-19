@@ -70,8 +70,8 @@ function MarketplaceHome() {
     setSizeModalProduct(product);
   };
 
-  const handleAddToCartFromModal = (productId: string, variantId: string | undefined, size: string) => {
-    addToCart(productId, variantId, size);
+  const handleAddToCartFromModal = (productId: string, variantId: string, size: string, color: string) => {
+    addToCart(productId, variantId, size, color);
     setSizeModalProduct(null);
     setIsCartSidebarOpen(true);
   };

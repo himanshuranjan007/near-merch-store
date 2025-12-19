@@ -1,4 +1,4 @@
-import { FavoriteButton } from "@/components/favorite-button";
+import { FavoriteButton } from "@/components/marketplace/favorite-button";
 import { Link } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 import { type Product, useSuspenseProduct } from "@/integrations/api";
@@ -144,13 +144,12 @@ function VerticalProductLayout({
   const isFavorite = favoriteIds.includes(product.id);
   const displayImage = product.thumbnailImage || product.images?.[0]?.url || product.variants?.[0]?.fulfillmentConfig?.designFiles?.[0]?.url;
 
-  // Text Sizes
   const titleSize = variant === "sm" ? "text-sm" : variant === "lg" ? "text-xl" : "text-lg";
   const priceSize = variant === "sm" ? "text-xs" : variant === "lg" ? "text-lg" : "text-base";
 
   return (
     <div className={cn(
-      "group relative bg-white border border-border overflow-hidden transition-all duration-300 hover:shadow-lg flex flex-col h-full",
+      "group relative bg-card dark:bg-card border border-border overflow-hidden transition-all duration-300 hover:shadow-lg flex flex-col h-full",
       className
     )}>
       {/* Image Section */}
@@ -240,7 +239,7 @@ function HorizontalProductLayout({
 
   return (
     <div className={cn(
-      "group relative bg-white border-transparent overflow-hidden flex items-start gap-4 p-4",
+      "group relative bg-card dark:bg-card border-transparent overflow-hidden flex items-start gap-4 p-4",
       className
     )}>
       {/* Image Section */}

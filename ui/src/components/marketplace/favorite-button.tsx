@@ -35,7 +35,7 @@ export function FavoriteButton({
                 <Heart
                     className={cn(
                         "size-6 transition-all duration-300",
-                        isFavorite ? "fill-red-500 stroke-red-500" : "stroke-foreground",
+                        isFavorite ? "fill-red-500 stroke-red-500" : "stroke-black",
                         isAnimating && "animate-heart-pop"
                     )}
                 />
@@ -56,7 +56,7 @@ export function FavoriteButton({
             <Heart
                 className={cn(
                     "size-4 transition-all duration-300 cursor-pointer",
-                    isFavorite ? "fill-red-500 stroke-red-500" : "stroke-foreground",
+                    isFavorite ? "fill-red-500 stroke-red-500" : "stroke-black",
                     isAnimating && "animate-heart-pop"
                 )}
                 aria-hidden="true"

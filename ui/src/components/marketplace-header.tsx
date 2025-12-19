@@ -17,7 +17,6 @@ import {
 } from "@/components/ui/sheet";
 import { useCart } from "@/hooks/use-cart";
 import { useFavorites } from "@/hooks/use-favorites";
-// import { COLLECTIONS } from "@/integrations/api"; // HIDDEN: Collections feature
 import { authClient } from "@/lib/auth-client";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { NearMark } from "@/components/near-mark";
@@ -38,36 +37,19 @@ export function MarketplaceHeader() {
     }
   };
 
-  // HIDDEN: Collections feature - uncomment to restore
-  // const collections = [
-  //   {
-  //     name: "Men",
-  //     href: "/collections/men",
-  //   },
-  //   {
-  //     name: "Women",
-  //     href: "/collections/women",
-  //   },
-  //   {
-  //     name: "Collections",
-  //     href: "/collections",
-  //   },
-  // ];
-  // const collections: Array<{ name: string; href: string }> = []; // HIDDEN: Unused variable
-
   return (
     <header className="bg-background border-b border-border sticky top-0 z-50">
       <div className="max-w-[1408px] mx-auto px-4 md:px-8 lg:px-16 py-3 md:py-6">
         <div className="flex items-center justify-between gap-4">
-          <a
-            href="/"
+          <Link
+            to="/"
             aria-label="NEAR"
             className="text-xl font-bold flex flex-row items-center gap-2 md:gap-4 relative pl-0 pr-0 py-0 md:pl-[26px] md:pr-6 md:py-4 shrink-0 grow-0 text-foreground"
           >
             <NearMark className="max-w-[28px]" />
             <span aria-hidden="true" className="h-6 w-px bg-border/60" />
             <NearWordmark className="max-w-[70px]" />
-          </a>
+          </Link>
 
           {/* HIDDEN: Collections navigation - uncomment to restore */}
           {/* <nav className="hidden md:flex items-center gap-6">

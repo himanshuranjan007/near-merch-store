@@ -1,36 +1,34 @@
-import { Effect, Schedule } from 'every-plugin/effect';
 import crypto from 'crypto';
-import { 
-  CatalogItem, 
-  TechniqueEnum, 
-  MockupTaskCreation,
+import { Effect, Schedule } from 'every-plugin/effect';
+import {
   MockupGeneratorTask,
-  type Address, 
-  type Shipment, 
-  type Variant,
-  type MockupStyles
+  MockupTaskCreation,
+  TechniqueEnum,
+  type Address,
+  type MockupStyles,
+  type Shipment,
+  type Variant
 } from 'printful-sdk-js-v2';
+import type { ProductImage } from '../../../schema';
+import { FulfillmentError } from '../errors';
 import type {
-  ProviderProduct,
-  FulfillmentOrderInput,
   FulfillmentOrder,
+  FulfillmentOrderInput,
   FulfillmentOrderStatus,
+  ProviderProduct,
   ProviderVariant,
   ShippingQuoteInput,
-  ShippingQuoteOutput,
-  ShippingRate
+  ShippingQuoteOutput
 } from '../schema';
-import type { ProductImage } from '../../../schema';
+import { PrintfulClient } from './client';
 import {
-  type PrintfulSyncProduct,
-  type PrintfulSyncVariant,
   extractDesignFiles,
+  type MockupResult,
   type MockupStyleInfo,
   type MockupTaskResult,
-  type MockupResult
+  type PrintfulSyncProduct,
+  type PrintfulSyncVariant
 } from './types';
-import { PrintfulClient } from './client';
-import { FulfillmentError } from '../errors';
 
 export class PrintfulService {
   private client: PrintfulClient;
@@ -167,7 +165,7 @@ export class PrintfulService {
           body: JSON.stringify({
             recipient: {
               country_code: params.recipient.countryCode,
-              state_code: params.recipient.stateCode,
+              state_code: params.recipient.stateCode === "" ? null : params.recipient.stateCode,
               city: params.recipient.city,
               zip: params.recipient.zip,
             },

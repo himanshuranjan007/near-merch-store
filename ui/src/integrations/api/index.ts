@@ -3,9 +3,10 @@ import type { ProductCategory } from './keys';
 
 export interface CartItem {
   productId: string;
-  variantId?: string;
+  variantId: string;
   quantity: number;
   size: string;
+  color: string;
 }
 
 export const COLLECTIONS: ProductCategory[] = ['Men', 'Women', 'Accessories', 'Exclusives'];
