@@ -30,7 +30,6 @@ export const Route = createFileRoute(
 function ConnectedAccountsPage() {
   const { accountId, profile } = Route.useLoaderData();
   const [linkedAccounts, setLinkedAccounts] = useState<any[]>([]);
-  const [isProcessingNear, setIsProcessingNear] = useState(false);
   const [isUnlinking, setIsUnlinking] = useState<string | null>(null);
 
   useEffect(() => {
@@ -49,31 +48,6 @@ function ConnectedAccountsPage() {
     }
   };
 
-  const handleNearAction = async () => {
-    setIsProcessingNear(true);
-    try {
-      // For linking additional accounts, use the link method
-      // Note: This will require two user interactions (connect + sign)
-      await authClient.near.link(
-        { recipient: process.env.PUBLIC_ACCOUNT_ID || "near-merch-store.near" },
-        {
-          onSuccess: () => {
-            console.log("NEAR account linked successfully");
-            refreshAccounts();
-            setIsProcessingNear(false);
-          },
-          onError: async (error: any) => {
-            console.error("NEAR link error:", error);
-            console.error(error.message || "Failed to link NEAR account");
-            setIsProcessingNear(false);
-          },
-        }
-      );
-    } catch (error) {
-      setIsProcessingNear(false);
-      console.log("Failed to link NEAR account");
-    }
-  };
 
   const handleUnlinkAccount = async (account: any) => {
     setIsUnlinking(account.providerId || account.accountId);
@@ -97,9 +71,6 @@ function ConnectedAccountsPage() {
     }
   };
 
-  const isProviderLinked = (providerId: string) =>
-    Array.isArray(linkedAccounts) &&
-    linkedAccounts.some((a) => a.providerId === providerId);
   const primaryAccount = Array.isArray(linkedAccounts)
     ? linkedAccounts.find((acc) => acc.providerId === "siwn") ||
       linkedAccounts[0]
@@ -188,47 +159,6 @@ function ConnectedAccountsPage() {
         </div>
       )}
 
-      <div className="border-t border-[rgba(0,0,0,0.1)] pt-4">
-        <p className="text-sm text-[#717182] mb-4">Add New Account</p>
-
-        {!isProviderLinked("siwn") && (
-          <div className="bg-card border border-border mb-3 p-4 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="bg-[#00ec97] size-10 flex items-center justify-center">
-                <svg className="size-5" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2L2 7v10l10 5 10-5V7L12 2z" fill="black" />
-                </svg>
-              </div>
-              <div>
-                <p className="text-sm">Link NEAR Account</p>
-                {accountId && (
-                  <p className="text-xs text-[#717182]">{accountId}</p>
-                )}
-              </div>
-            </div>
-            <button
-              onClick={handleNearAction}
-              disabled={isProcessingNear}
-              className="bg-[#030213] hover:bg-[#1a1a2e] text-white text-xs h-8 px-4 disabled:opacity-50"
-            >
-              {isProcessingNear
-                ? accountId
-                  ? "Linking..."
-                  : "Connecting..."
-                : accountId
-                ? "Link"
-                : "Connect"}
-            </button>
-          </div>
-        )}
-      </div>
-
-      <div className="bg-[#ececf0] p-4 mt-6">
-        <p className="text-xs text-[#717182]">
-          💡 Connect multiple accounts for flexible sign-in options. You can
-          disconnect at any time from this page.
-        </p>
-      </div>
     </div>
   );
 }

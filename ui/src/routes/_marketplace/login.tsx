@@ -50,29 +50,12 @@ function LoginPage() {
           onError: (error: any) => {
             setIsConnectingWallet(false);
             console.error("Wallet connection error:", error);
-
-            // Handle specific error cases
-            if (error?.code === "SIGNER_NOT_AVAILABLE" || error?.message?.includes("not available")) {
-              toast.error("NEAR wallet not available. Please install Meteor Wallet or MyNEARWallet.");
-              return;
-            }
-
-            if (error?.code === "USER_REJECTED") {
-              toast.error("Wallet connection was cancelled.");
-              return;
-            }
-
-            const errorMessage = error instanceof Error 
-              ? error.message 
-              : "Failed to connect wallet";
-            toast.error(errorMessage);
           },
         }
       );
     } catch (error) {
       setIsConnectingWallet(false);
       console.error("Wallet connection error:", error);
-      toast.error("An unexpected error occurred while connecting wallet");
     }
   };
 
@@ -87,36 +70,17 @@ function LoginPage() {
           onSuccess: () => {
             setIsSigningIn(false);
             queryClient.invalidateQueries();
-            
-            const userName = accountId || "User";
-            toast.success(`Welcome back, ${userName}!`);
-            
-            // Always redirect to cart after successful sign-in
-            // Use window.location for full page reload to ensure session is loaded
-            setTimeout(() => {
-              window.location.href = "/cart";
-            }, 500);
+            window.location.href = "/cart";
           },
           onError: (error: any) => {
             setIsSigningIn(false);
             console.error("Sign in error:", error);
-
-            if (error?.code === "USER_REJECTED") {
-              toast.error("Sign in was cancelled.");
-              return;
-            }
-
-            const errorMessage = error instanceof Error 
-              ? error.message 
-              : "Failed to sign in";
-            toast.error(errorMessage);
           },
         }
       );
     } catch (error) {
       setIsSigningIn(false);
       console.error("Sign in error:", error);
-      toast.error("An unexpected error occurred during sign in");
     }
   };
 
